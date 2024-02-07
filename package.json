@@ -41,5 +41,8 @@
     "jsonwebtoken": "^9.0.2",
     "mais-mongoose-seeder": "^1.0.7",
     "mongoose": "^8.1.1"
+  },
+  "engines": {
+    "node": "18"
   }
 }
