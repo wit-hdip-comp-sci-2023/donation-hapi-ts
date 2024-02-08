@@ -10,6 +10,9 @@ import { fileURLToPath } from "url";
 import { accountsController } from "./controllers/accounts-controller.js";
 import { webRoutes } from "./web-routes.js";
 import { connectDb } from "./models/db.js";
+import { apiRoutes } from "./api-routes.js";
+import { validate } from "./api/jwt-utils.js";
+import jwt from "hapi-auth-jwt2";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +29,7 @@ async function initPlugins(server: Server) {
   await server.register(Inert);
   await server.register(Vision);
   await server.register(Cookie);
+  await server.register(jwt);
 
   server.views({
     engines: {
@@ -51,6 +55,12 @@ function initSecurityStrategies(server: Server) {
     validate: accountsController.validate,
   });
   server.auth.default("session");
+
+  server.auth.strategy("jwt", "jwt", {
+    key: process.env.cookie_password,
+    validate: validate,
+    verifyOptions: { algorithms: ["HS256"] },
+  });
 }
 
 async function init() {
@@ -63,6 +73,8 @@ async function init() {
   initSecurityStrategies(server);
   connectDb("mongo");
   server.route(webRoutes);
+
+  server.route(apiRoutes);
   await server.start();
   console.log(`Server running at: ${server.info.uri}`);
 }
