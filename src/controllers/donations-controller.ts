@@ -6,7 +6,7 @@ export const donationsController = {
     handler: async function (request: Request, h: ResponseToolkit) {
       const loggedInUser = request.auth.credentials;
       const candidates = await db.candidateStore.find();
-      return h.view("Donate", {
+      return h.view("donate", {
         title: "Make a Donation",
         user: loggedInUser,
         candidates: candidates,
@@ -38,7 +38,7 @@ export const donationsController = {
     handler: async function (request: Request, h: ResponseToolkit) {
       const loggedInUser = request.auth.credentials;
       const donations = await db.donationStore.find();
-      return h.view("Report", {
+      return h.view("report", {
         title: "Report",
         user: loggedInUser,
         donations: donations,
